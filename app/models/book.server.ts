@@ -2,6 +2,31 @@ import { prisma } from "~/db.server"
 import { Book } from "@prisma/client"
 import invariant from "tiny-invariant"
 
+export enum BookTypes {
+  马克思主义 = 1,
+  哲学,
+  社会科学总论,
+  政治法律,
+  军事,
+  经济,
+  文化,
+  语言,
+  文学,
+  艺术,
+  历史地理,
+  自然科学总论,
+  数理科学和化学,
+  天文学地球科学,
+  生物科学,
+  医药卫生,
+  农业科学,
+  工业技术,
+  交通运输,
+  航空航天,
+  环境科学,
+  综合
+}
+
 export async function createBook(
   isbn: string,
   name: string,
@@ -10,11 +35,6 @@ export async function createBook(
   price: number,
   type: number
 ) {
-  await prisma.inventory.create({
-    data: {
-      isbn,
-    },
-  })
 
   return prisma.book.create({
     data: {
@@ -25,8 +45,13 @@ export async function createBook(
       price,
       type,
       inventory: {
-        connect: {
-          isbn: isbn,
+        connectOrCreate: {
+          where: {
+            isbn
+          },
+          create: {
+            
+          }
         },
       },
     },

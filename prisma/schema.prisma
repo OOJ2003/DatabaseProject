@@ -29,7 +29,7 @@ model Inventory {
   sums Int @default(0)
   rest Int @default(0)
   
-  book Book @relation(fields: [isbn], references: [isbn])
+  book Book? @relation(fields: [isbn], references: [isbn])
 }
 
 model BookType {
@@ -44,7 +44,7 @@ model BookLib {
   location String
 
   isbn String
-  book Book   @relation(fields: [isbn], references: [isbn])
+  book Book?   @relation(fields: [isbn], references: [isbn])
 
   status Boolean @default(true)
   borrow Borrow?
@@ -61,14 +61,14 @@ model User {
 
   borrows Borrow[]
   posts   Post[]
-  credit  Credit   @relation(fields: [id], references: [userId])
+  credit  Credit?  
 }
 
 model Credit {
-  userId Int @id @unique @map("user_id")
+  userId Int @id @unique @map("user_id") 
   credit Int @default(100)
 
-  User User?
+  User User? @relation(fields: [userId], references: [id])
 }
 
 model Borrow {
@@ -80,9 +80,9 @@ model Borrow {
   returnDate DateTime @map("return_date")
   isReturn   Boolean  @default(false) @map("is_return")
 
-  user    User    @relation(fields: [userId], references: [id])
-  book    Book    @relation(fields: [isbn], references: [isbn])
-  bookLib BookLib @relation(fields: [bookId], references: [id])
+  user    User?    @relation(fields: [userId], references: [id])
+  book    Book?    @relation(fields: [isbn], references: [isbn])
+  bookLib BookLib? @relation(fields: [bookId], references: [id])
 }
 
 model Post {
@@ -95,5 +95,6 @@ model Post {
   book Book   @relation(fields: [isbn], references: [isbn])
 
   userId Int  @map("user_id")
-  user   User @relation(fields: [userId], references: [id])
+  user   User? @relation(fields: [userId], references: [id])
 }
+

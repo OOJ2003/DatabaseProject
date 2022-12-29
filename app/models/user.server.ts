@@ -1,5 +1,4 @@
 import { prisma } from "~/db.server"
-import { User } from "@prisma/client"
 import bcrypt from "bcryptjs"
 
 
@@ -14,7 +13,14 @@ export async function createUser(
       hash: await bcrypt.hash(password, 10),
       type: "normal",
       email: email,
-    },
+    }
+    
+  })
+
+  await prisma.credit.create({
+    data: {
+      userId: user.id
+    }
   })
 
   return prisma.user.update({
@@ -23,9 +29,8 @@ export async function createUser(
     },
     data: {
       credit: {
-        create: {
-          userId: user.id,
-          credit: 100
+        connect: {
+          userId: user.id
         }
       }
     }
